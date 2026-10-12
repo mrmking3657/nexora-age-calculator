@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexora | Age Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: white;
+      background: radial-gradient(circle at top, #25205b, #080b18 65%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      padding: 30px;
+      border: 1px solid #5945b9;
+      border-radius: 24px;
+      background: rgba(18, 22, 48, 0.94);
+      box-shadow: 0 0 35px #633cff30;
+    }
+
+    .logo {
+      color: #8c7bff;
+      font-size: 15px;
+      letter-spacing: 5px;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
+
+    h1 span {
+      color: #8c7bff;
+    }
+
+    .subtitle {
+      color: #b8bfd8;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin: 24px 0 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #514b7e;
+      border-radius: 12px;
+      background: #0b1025;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 12px;
+      color: white;
+      background: linear-gradient(90deg, #7047ff, #a348ff);
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.88;
+    }
+
+    #result {
+      display: none;
+      margin-top: 24px;
+      padding: 18px;
+      border-radius: 15px;
+      background: #0b1025;
+      border: 1px solid #38365e;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .stat {
+      padding: 13px 5px;
+      text-align: center;
+      border-radius: 12px;
+      background: #202344;
+    }
+
+    .number {
+      display: block;
+      color: #a99aff;
+      font-size: 23px;
+      font-weight: bold;
+    }
+
+    .small {
+      color: #c1c5df;
+      font-size: 12px;
+    }
+
+    #message {
+      color: #ff9cbd;
+      margin-top: 12px;
+    }
+
+    footer {
+      margin-top: 25px;
+      color: #777f9e;
+      text-align: center;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="card">
+    <div class="logo">✦ N E X O R A</div>
+
+    <h1>Know Your <span>Age.</span></h1>
+
+    <p class="subtitle">
+      Every second tells a story. Discover yours.
+    </p>
+
+    <label for="birthDate">Enter your date of birth</label>
+    <input type="date" id="birthDate">
+
+    <button onclick="calculateAge()">Calculate My Age ✨</button>
+
+    <p id="message"></p>
+
+    <section id="result">
+      <h2>Your Age</h2>
+      <div class="stats">
+        <div class="stat">
+          <span class="number" id="years">0</span>
+          <span class="small">Years</span>
+        </div>
+        <div class="stat">
+          <span class="number" id="months">0</span>
+          <span class="small">Months</span>
+        </div>
+        <div class="stat">
+          <span class="number" id="days">0</span>
+          <span class="small">Days</span>
+        </div>
+      </div>
+      <p id="totalTime"></p>
+    </section>
+
+    <footer>Made with ♥ by Nexora</footer>
+  </main>
+
+  <script>
+    function calculateAge() {
+      const input = document.getElementById("birthDate");
+      const message = document.getElementById("message");
+      const result = document.getElementById("result");
+
+      message.textContent = "";
+      result.style.display = "none";
+
+      if (!input.value) {
+        message.textContent = "Please enter your birth date.";
+        return;
+      }
+
+      const birth = new Date(input.value + "T00:00:00");
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (birth > today) {
+        message.textContent = "Birth date cannot be in the future!";
+        return;
+      }
+
+      let years = today.getFullYear() - birth.getFullYear();
+      let months = today.getMonth() - birth.getMonth();
+      let days = today.getDate() - birth.getDate();
+
+      if (days < 0) {
+        months--;
+        const previousMonthDays = new Date(
+          today.getFullYear(), today.getMonth(), 0
+        ).getDate();
+        days += previousMonthDays;
+      }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      document.getElementById("years").textContent = years;
+      document.getElementById("months").textContent = months;
+      document.getElementById("days").textContent = days;
+
+      const totalSeconds = Math.floor(
+        (today.getTime() - birth.getTime()) / 1000
+      );
+
+      const totalDays = Math.floor(totalSeconds / 86400);
+      const totalHours = Math.floor(totalSeconds / 3600);
+      const totalMinutes = Math.floor(totalSeconds / 60);
+
+      document.getElementById("totalTime").textContent =
+        `About ${totalDays.toLocaleString()} days lived • ` +
+        `${totalHours.toLocaleString()} hours • ` +
+        `${totalMinutes.toLocaleString()} minutes`;
+
+      result.style.display = "block";
+    }
+
+    document.getElementById("birthDate").max =
+      new Date().toLocaleDateString("en-CA");
+  </script>
+
+</body>
+</html>
